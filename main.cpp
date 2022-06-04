@@ -11,34 +11,26 @@ string arr[] = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "main",
 
 bool isKeyword (string a){
 
-	for (int i = 0; i < 14; i++){
-	if (arr[i] == a){
-		return true;
+	for (int i = 0; i < 14; i++)
+	{
+		if (arr[i] == a)
+		{
+			return true;
+		}
 	}
-
-	}
-
+	
 	return false;
 }
 
-
-int main ()
-{
-
-	ifstream file("prog.txt");
-	string x;
-	string code="";
-
-	while (getline(file, x)) {
-		code+=x;
-	}
-
-	string s="";
-		for (int i = 0; i < code.size (); i++)
+void parser(string str){
+		string s="";
+		int len = str.length();
+		
+	for (int i = 0; i < len; i++)
 	{
 
-		if (code[i] != ' ')
-		s += code[i];
+		if (str[i] != ' ')
+		s += str[i];
 
 	else {
 		if (s == "+" || s == "-" || s == "*" || s == "/" || s == "^" || s == "&&" || s == "||" ||
@@ -69,7 +61,6 @@ int main ()
 	
 	else if (isdigit (s[0]))
 	{
-	
 		int x = 0;
 			if (!isdigit (s[x++]))
 				{
@@ -89,4 +80,22 @@ int main ()
 
 		}
 	}
+	
 }
+
+int main ()
+{
+	ifstream file("prog.txt");
+	string x;
+	string code="";
+
+	while (getline(file, x)) {
+		code+=x;
+	}
+	
+	parser(code);
+
+	return 0;
+}
+
+
