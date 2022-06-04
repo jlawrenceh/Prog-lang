@@ -9,27 +9,27 @@ using namespace std;
 string arr[] = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "main",
 				  "IN", "OUT", "return", "std", "iostream", "endl" };
 
-bool isKeyword (string a)
-	{
-		for (int i = 0; i < 14; i++)
-	{
-	if (arr[i] == a) {
-	
-			return true;
-		}
+bool isKeyword (string a){
+
+	for (int i = 0; i < 14; i++){
+	if (arr[i] == a){
+		return true;
 	}
+
+	}
+
 	return false;
-	}
+}
 
 
 int main ()
 {
 
-	std::ifstream file("prog.txt");
-	std::string x;
+	ifstream file("prog.txt");
+	string x;
 	string code="";
 
-	while (std::getline(file, x)) {
+	while (getline(file, x)) {
 		code+=x;
 	}
 
