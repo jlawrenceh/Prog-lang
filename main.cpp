@@ -9,12 +9,41 @@ using namespace std;
 
 array<string, 14> arr = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "main",
 				  "IN", "OUT", "return", "std", "iostream", "endl" };
+				  
+array<string, 19> op = { "+", "-", "*", "/",  "^",  "&&",  "||",  "=",  "==",  "&",  "|",  "%", "++",  "--", "+=", "-=", "/=", "*=", "%=" };
+array<string, 18> sym = { "(", "{", "[", ")", "}", "]", "<", ">", "()", ";", "<<", ">>", ",", "#", ",", "~", "#", "@" };
 
 bool isKeyword (string a){
 
 	for (int i = 0; i < 14; i++)
 	{
 		if (arr[i] == a)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+bool isOperator (string a){
+	
+	for (int i = 0; i < 19; i++)
+	{
+		if (op[i] == a)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+bool isSymbol (string a){
+	
+	for (int i = 0; i < 18; i++)
+	{
+		if (sym[i] == a)
 		{
 			return true;
 		}
@@ -34,9 +63,7 @@ void parser(string str){
 		s += str[i];
 
 	else {
-		if (s == "+" || s == "-" || s == "*" || s == "/" || s == "^" || s == "&&" || s == "||" ||
-			s == "=" || s == "==" || s == "&" || s == "|" || s == "%" || s == "++" || s == "--" || 
-			s == "+=" || s == "-=" || s == "/=" || s == "*=" || s == "%=")
+		if (isOperator(s))
 	{
 		cout << s <<" is an operator" << endl;
 		s = "";
@@ -47,8 +74,7 @@ void parser(string str){
 		s = "";
 	}
 	
-	else if (s == "(" || s == "{" || s == "[" || s == ")" || s == "}" || s == "]" || s == "<" ||
-			 s == ">" || s == "()" || s == ";" || s == "<<" || s == ">>" || s == "," || s == "#" || s == "~" || s == "@")
+	else if (isSymbol(s))
 	{
 		cout << s <<" is a symbol" << endl;
 		s = "";
