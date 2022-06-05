@@ -2,11 +2,12 @@
 #include<cstring>
 #include<stdlib.h>
 #include<ctype.h>
-#include <fstream>
-#include <string>
+#include<fstream>
+#include<array>
+#include<string>
 using namespace std;
 
-string arr[] = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "main",
+array<string, 14> arr = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "main",
 				  "IN", "OUT", "return", "std", "iostream", "endl" };
 
 bool isKeyword (string a){
@@ -93,7 +94,7 @@ int main ()
 		code+=x;
 	}
 	
-	parser(code);
+	parser(code + ' ');
 
 	return 0;
 }
