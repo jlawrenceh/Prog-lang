@@ -5,17 +5,21 @@
 #include<fstream>
 #include<array>
 #include<string>
+#include<vector>
 using namespace std;
 
-array<string, 14> arr = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "main",
+array<string, 15> arr = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "CONST", "main",
 				  "IN", "OUT", "return", "std", "iostream", "endl" };
 				  
 array<string, 19> op = { "+", "-", "*", "/",  "^",  "&&",  "||",  "=",  "==",  "&",  "|",  "%", "++",  "--", "+=", "-=", "/=", "*=", "%=" };
 array<string, 18> sym = { "(", "{", "[", ")", "}", "]", "<", ">", "()", ";", "<<", ">>", ",", "#", ",", "~", "#", "@" };
 
+vector<string> lex;
+vector<string> :: iterator i;
+
 bool isKeyword (string a){
 
-	for (int i = 0; i < 14; i++)
+	for (int i = 0; i < 15; i++)
 	{
 		if (arr[i] == a)
 		{
@@ -32,6 +36,7 @@ bool isOperator (string a){
 	{
 		if (op[i] == a)
 		{
+			
 			return true;
 		}
 	}
@@ -45,6 +50,7 @@ bool isSymbol (string a){
 	{
 		if (sym[i] == a)
 		{
+		
 			return true;
 		}
 	}
@@ -65,17 +71,21 @@ void parser(string str){
 	else {
 		if (isOperator(s))
 	{
+		lex.push_back(s);
 		cout << s <<" is an operator" << endl;
 		s = "";
 	}
 
 	else if (isKeyword (s)) {
+		
+		lex.push_back(s);
 		cout << s <<" is a keyword" << endl;
 		s = "";
 	}
 	
 	else if (isSymbol(s))
 	{
+		lex.push_back(s);
 		cout << s <<" is a symbol" << endl;
 		s = "";
 	}
@@ -95,17 +105,24 @@ void parser(string str){
 				} 
 		else
 		{
+			lex.push_back(s);
 			cout << s <<" is a number" << endl;
 			s = "";
 		}
 	}
 	
 	else {
+		lex.push_back(s);
 		cout << s <<" is an identifier" << endl;
 		s = "";
 			}
 
 		}
+	}
+	
+	cout<<endl;
+	for (i = lex.begin(); i != lex.end(); ++i){
+		cout << *i << ", ";
 	}
 	
 }
@@ -124,5 +141,3 @@ int main ()
 
 	return 0;
 }
-
-
