@@ -8,8 +8,8 @@
 #include<vector>
 using namespace std;
 
-array<string, 15> arr = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "CONST", "main",
-				  "IN", "OUT", "return", "std", "iostream", "endl" };
+array<string, 17> arr = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "CONST", "main",
+				  "IN", "OUT", "return", "std", "iostream", "endl", "IF", "ELSE" };
 				  
 array<string, 19> op = { "+", "-", "*", "/",  "^",  "&&",  "||",  "=",  "==",  "&",  "|",  "%", "++",  "--", "+=", "-=", "/=", "*=", "%=" };
 array<string, 18> sym = { "(", "{", "[", ")", "}", "]", "<", ">", "()", ";", "<<", ">>", ",", "#", ",", "~", "#", "@" };
@@ -19,7 +19,7 @@ vector<string> :: iterator i;
 
 bool isKeyword (string a){
 
-	for (int i = 0; i < 15; i++)
+	for (int i = 0; i < 17; i++)
 	{
 		if (arr[i] == a)
 		{
