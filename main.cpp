@@ -66,57 +66,59 @@ void parser(string str){
 	{
 
 		if (str[i] != ' ')
-		s += str[i];
-
-	else {
-		if (isOperator(s))
-	{
-		lex.push_back(s);
-		cout << s <<" is an operator" << endl;
-		s = "";
-	}
-
-	else if (isKeyword (s)) {
-		
-		lex.push_back(s);
-		cout << s <<" is a keyword" << endl;
-		s = "";
-	}
-	
-	else if (isSymbol(s))
-	{
-		lex.push_back(s);
-		cout << s <<" is a symbol" << endl;
-		s = "";
-	}
-	
-	else if (s == "\n" || s == "" || s == "")
-	{
-		cout << endl;
-		s = "";
-	}
-	
-	else if (isdigit (s[0]))
-	{
-		int x = 0;
-			if (!isdigit (s[x++]))
-				{
-					continue;
-				} 
-		else
 		{
-			lex.push_back(s);
-			cout << s <<" is a number" << endl;
-			s = "";
+			s += str[i];
+			
 		}
-	}
-	
-	else {
-		lex.push_back(s);
-		cout << s <<" is an identifier" << endl;
-		s = "";
+		else 
+		{	
+			lex.push_back(s);
+			
+			if (isOperator(s))
+			{
+				cout << s <<" is an operator" << endl;
+				s = "";
 			}
-
+			
+			else if (isKeyword (s)) 
+			{
+				cout << s <<" is a keyword" << endl;
+				s = "";
+			}
+			
+			else if (isSymbol(s))
+			{
+				cout << s <<" is a symbol" << endl;
+				s = "";
+			}
+		
+			else if (s == "\n" || s == "" || s == "")
+			{
+				cout << endl;
+				s = "";
+			}
+		
+			else if (isdigit (s[0]))
+			{
+				int x = 0;
+				
+				if (!isdigit (s[x++]))
+					{
+						continue;
+					} 
+				else
+				{
+					lex.push_back(s);
+					cout << s <<" is a number" << endl;
+					s = "";
+				}
+			}
+	
+			else 
+			{
+				cout << s <<" is an identifier" << endl;
+				s = "";
+			}
 		}
 	}
 	
@@ -135,13 +137,14 @@ void parser(string str){
 int main ()
 {
 	ifstream file("prog.txt");
-	string x;
+	string lines;
 	string code="";
 
-	while (getline(file, x)) {
-		code+=x;
+	while (getline(file, lines)) {
+		code+=lines;
 	}
 	
+	cout << code << endl; 
 	parser(code + ' ');
 
 	return 0;
