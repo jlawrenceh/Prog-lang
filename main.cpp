@@ -96,9 +96,10 @@ void parser(string str){
 		int len = str.length();
 		bool read_str_lit = false;
 		
+	
+		
 	for (int i = 0; i < len; i++)
 	{
-
 		if (read_str_lit == true)
 		{
 			s+= str[i];
@@ -118,9 +119,7 @@ void parser(string str){
 			s+= str[i];
 			continue;
 		}
-	for (int i = 0; i < len; i++)
-	{
-
+		
 		if (str[i] != ' ')
 		s += str[i];
 
