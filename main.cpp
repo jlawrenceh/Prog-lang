@@ -94,7 +94,30 @@ void view_lexical_errors(){
 void parser(string str){
 		string s="";
 		int len = str.length();
+		bool read_str_lit = false;
 		
+	for (int i = 0; i < len; i++)
+	{
+
+		if (read_str_lit == true)
+		{
+			s+= str[i];
+			if (str[i] == '\"')
+			{
+				read_str_lit = false;
+				lex.push_back(s);
+				cout << s <<" is a string literal";
+				s = "";
+			}
+			continue;
+		}	
+		
+		if (str[i] == '\"')
+		{
+			read_str_lit = true;
+			s+= str[i];
+			continue;
+		}
 	for (int i = 0; i < len; i++)
 	{
 
