@@ -87,10 +87,10 @@ bool invalid_identifier(string a){
 		}    
 }
 
-bool is_number(string a){
-	string::const_iterator it = a.begin();
+bool is_number(string a){ //check if string is only number(s) or not
+    string::const_iterator it = a.begin();
     while (it != a.end() && isdigit(*it)) ++it;
-    return !a.empty() && it == a.end();
+    return !a.empty() && it == a.end(); //return false if empty, returns 1 if true otherwise 0
 }
 
 void view_lexical_errors(){
