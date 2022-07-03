@@ -157,7 +157,7 @@ void parser(string str){
 	else if (isSymbol(s))
 	{
 		lex.push_back(s);
-		tokens.push_back({s,"Symbol"});
+		tokens.push_back({s,"symbol"});
 	//	cout << s <<" is a symbol\n";
 		s = "";
 	}
@@ -191,6 +191,7 @@ void parser(string str){
 	}
 	
 	else {
+		lex.push_back(s);
 		tokens.push_back({s,"identifier"});
 		if(islexicalerror(s)){
 			lexical_errors.push_back(s);
