@@ -1,3 +1,0 @@
-INT a = 3 ~ 
-DBL b = 1.5 ~ 
-STR s = " hello " ~ 
