@@ -16,7 +16,7 @@ using namespace std;
 array<string, 17> keyword = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "CONST", "main",
 				  			  "IN", "OUT", "return", "std", "iostream", "endl", "IF", "ELSE" };
 				  			  
-array<string, 19> op = { "+", "-", "*", "/",  "^",  "&&",  "||",  "=",  "==",  "&",  "|",  "%", "++",  "--", "+=", "-=", "/=", "*=", "%=" };
+array<string, 19> op = { "+", "-", "*", "/",  "^",  "&&",  "||",  "=",  "==",  "&",  "|",  "%", "INC",  "DEC", "+=", "-=", "/=", "*=", "%=" };
 array<string, 18> sym = { "(", "{", "[", ")", "}", "]", "<", ">", "()", ";", "<<", ">>", ",", "#", ",", "~", "#", "@" };
 
 string legal_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_";
@@ -137,8 +137,7 @@ void parser(string str){
 	if (str[i] != ' ')
 	s += str[i];
 	
-	else {
-		if (isOperator(s))
+	else if (isOperator(s))
 	{
 		lex.push_back(s);
 	//	cout << s <<" is an operator\n";
@@ -203,7 +202,6 @@ void parser(string str){
 		}
 	}
 	
-}
 
 void parser_clear()
 {
