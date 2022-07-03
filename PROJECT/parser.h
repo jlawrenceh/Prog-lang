@@ -18,7 +18,7 @@ array<string, 17> keyword = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR",
 				  			  "IN", "OUT", "return", "std", "iostream", "endl", "IF", "ELSE" };
 				  			
 array<string, 19> op = { "+", "-", "*", "/",  "^",  "&&",  "||",  "=",  "==",  "&",  "|",  "%", "INC",  "DEC", "+=", "-=", "/=", "*=", "%=" };
-array<string, 18> sym = { "(", "{", "[", ")", "}", "]", "<", ">", "()", ";", "<<", ">>", ",", "#", ",", "~", "#", "@" };
+array<string, 17> sym = { "(", "{", "[", ")", "}", "]", "<", ">", "()", ";", "<<", ">>", ",", "#", ",", "#", "@" };
 
 string legal_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_";
 string nums = "1234567890";
@@ -59,7 +59,7 @@ bool isOperator (string a){
 
 bool isSymbol (string a){
 	
-	for (int i = 0; i < 18; i++)
+	for (int i = 0; i < 17; i++)
 	{
 		if (sym[i] == a)
 		{
@@ -140,6 +140,12 @@ void parser(string str){
 	if (str[i] != ' ')
 	s += str[i];
 	
+	else if (s == "~")
+	{
+		lex.push_back(s);
+			tokens.push_back({s,"terminator"});
+		s = "";
+	}
 	else if (isOperator(s))
 	{
 		lex.push_back(s);
@@ -175,6 +181,7 @@ void parser(string str){
 		int x = 0;
 		string s_copy = s;
 		s_copy.erase(remove(s_copy.begin(), s_copy.end(), '.'), s_copy.end()); // to remove '.' from floating point numbers temporarily
+		
 			if (!isdigit (s[x++]))
 			{
 				continue;
@@ -187,21 +194,26 @@ void parser(string str){
 			else
 			{
 				lex.push_back(s);
-				tokens.push_back({s,"numeric literal"});
+				if(s==s_copy)
+				{
+						tokens.push_back({s,"integer"});
+				}
+				else
+				{
+						tokens.push_back({s,"double"});
+				}
 				s = "";
 			}
 	}
+
 	
 	else {
+		lex.push_back(s);
+		tokens.push_back({s,"identifier"});
 		if(islexicalerror(s)){
 			lexical_errors.push_back(s);
 	//		cout << s << " is an lexical error\n"; //if identifier has symbol(s)
-		} else {
-			lex.push_back(s);
-			tokens.push_back({s,"identifier"});
-		}
-
-
+		} 
 		s = "";
 			}
 
@@ -218,10 +230,10 @@ void parser_clear()
 
 vector<string> data_types = {"INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR"};
 
-vector<string> literals = {"string literal","numeric literal"};
+vector<string> literals = {"string literal","integer","double"};
 vector<pair<string, string>> assign; // assignment syntax 
 bool check;
-
+/*
 struct{
 	int var;
 }type_INT[]{};
@@ -249,6 +261,25 @@ struct
 	string var;
 }type_STR[]{};
 int type_STR_inst = -1;
+*/
+
+bool isMatched(string _type, string _val)
+{
+	if(
+		((_type == "INT") && (_val == "integer")) || 
+		(_type == "DBL") && (_val == "double") || 
+		(_type == "STR") && (_val == "string literal")
+	  ) 
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+	
+}
+
 void assignment()
 {
         	for(auto it = tokens.begin(); it!=tokens.end();it++)
@@ -296,17 +327,26 @@ void assignment()
 								
 								if(check == true)
 								{
-									for(auto it4 = assign.begin(); it4!=assign.end();it4++)
-									{
-										cout<<it4->first << "\t" << it4->second << endl;
-									}
+									
 									cout << endl;
 									auto ptr_type = assign.begin(); // point at the type which is at index 0
-									auto ptr_name = next(ptr_type,1); // point at the name which is at index 2
+									auto ptr_name = next(ptr_type,1); // point at the name which is at index 1
+									//auto ptr_assign = next(ptr_type,2; // point at the equal sign at index 2
 									auto ptr_val = next(ptr_type,3); // point to the value which is at index 3
 									
-									cout << ptr_type->first << " " << ptr_name->first << " " << ptr_val->first << endl;
+									//cout << ptr_type->first << " " << ptr_name->first << " " << ptr_val->first << endl;
+								
 									
+									if(!isMatched(ptr_type->first, ptr_val->second))
+									{
+										
+										for(auto it4 = assign.begin(); it4!=assign.end();it4++)
+										{
+											cout<<it4->first << "\t" << it4->second << endl;
+										}
+										cout << "type mismatch" << endl << endl;
+									}
+									assign.clear();
 									
 								}
 							}
@@ -327,15 +367,7 @@ void assignment()
 			
 }
 
-void type_check(string _type, string _name, string _val)
-{
-	if (!(_type == "STR") && (_val == "string literal"));
-	{
-		cout << "type mismatch" << endl;
-	}
-	
-	
-}
+
 
 
 

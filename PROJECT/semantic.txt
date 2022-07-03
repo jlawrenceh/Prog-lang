@@ -1,1 +1,4 @@
-STR s = "hello world" ~ 
+INT n = 5.2 ~ 
+STR str = "Hello World" ~ 
+STR s = 5 ~ 
+
