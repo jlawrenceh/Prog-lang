@@ -190,12 +190,15 @@ void parser(string str){
 	}
 	
 	else {
-		lex.push_back(s);
-		tokens.push_back({s,"identifier"});
 		if(islexicalerror(s)){
 			lexical_errors.push_back(s);
 	//		cout << s << " is an lexical error\n"; //if identifier has symbol(s)
-		} 
+		} else {
+			lex.push_back(s);
+			tokens.push_back({s,"identifier"});
+		}
+
+
 		s = "";
 			}
 
