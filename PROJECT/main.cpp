@@ -44,7 +44,7 @@ int main(){
 			if(!file.fail()){
 				while (getline(file, x)){
 					code+=x;
-					}	
+				}	
 			cout<< filename <<" file successfully uploaded\n";
 			
 			parser(code + ' ');
@@ -70,7 +70,7 @@ int main(){
 				}
 			}
 			
-        	cout << endl;
+        	cout << "\n\n";
         	for(auto it : tokens)
         	{
         		cout << it.first << "\t" << it.second<<endl;
@@ -79,9 +79,11 @@ int main(){
         }
         case 3:{ // lexical errors
         	if(lexical_errors.empty()){
-				cout<<"No errors found...\n";
+        		cout<<"\n";
+				cout<<"No Lexical Error(s) found...\n";
 		    } else {
-		    	cout << "Lexical errors...\n";
+		    	cout<<"\n";
+		    	cout << "Lexical Error(s)...\n";
             	view_lexical_errors();
 			}
             break;
