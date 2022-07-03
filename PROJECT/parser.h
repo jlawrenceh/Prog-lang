@@ -9,13 +9,14 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <iterator>
 
 using namespace std;
 
 
 array<string, 17> keyword = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "CONST", "main",
 				  			  "IN", "OUT", "return", "std", "iostream", "endl", "IF", "ELSE" };
-				  			  
+				  			
 array<string, 19> op = { "+", "-", "*", "/",  "^",  "&&",  "||",  "=",  "==",  "&",  "|",  "%", "INC",  "DEC", "+=", "-=", "/=", "*=", "%=" };
 array<string, 18> sym = { "(", "{", "[", ")", "}", "]", "<", ">", "()", ";", "<<", ">>", ",", "#", ",", "~", "#", "@" };
 
@@ -26,6 +27,8 @@ vector<pair<string,string>> tokens;
 vector<string> lex;
 vector<string> :: iterator i;
 vector<string> lexical_errors;
+
+
 
 bool isKeyword (string a){
 
@@ -209,3 +212,127 @@ void parser_clear()
 	lex.clear();
 	lexical_errors.clear();
 }
+
+vector<string> data_types = {"INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR"};
+
+vector<string> literals = {"string literal","numeric literal"};
+vector<pair<string, string>> assign; // assignment syntax 
+bool check;
+
+struct{
+	int var;
+}type_INT[]{};
+int type_INT_inst = -1;
+
+struct {
+	char var;
+}type_CHAR[]{};
+int type_CHAR_inst = -1;
+
+struct 
+{
+	bool var;
+}type_BLN[]{};
+int type_BLN_inst = -1;
+
+struct 
+{
+	float var;
+}type_DBL[]{};
+int type_DBL_inst = -1;
+
+struct 
+{
+	string var;
+}type_STR[]{};
+int type_STR_inst = -1;
+void assignment()
+{
+        	for(auto it = tokens.begin(); it!=tokens.end();it++)
+        	{
+        		if(it->second == "keyword")
+        		{
+        		//	cout << it->first << endl;
+        			//auto nx =std :: next(it, 2);
+        			
+        			for(auto it2 = data_types.begin(); it2!=data_types.end();it2++)
+        			{
+        				if(it->first == *it2) // check if the keyword is a data type
+        				{
+        					assign.push_back({it->first,it->second});
+        					check = true; //  if the keyword is a data type, check = true;
+        			//		cout << it->first << "\t" << it->second << endl;
+        					break;
+						}
+					}
+					
+					if (check == true)
+					{
+						check = false;
+						auto nx = next(it,1);
+						if(nx->second == "identifier") // check if the token next to data type is an identifier
+						{
+							assign.push_back({nx->first,nx->second});
+					//		cout << nx->first << "\t" << nx->second << endl;
+							nx++;
+		        			if(nx->first == "=") // check if the token next to identifier is an assignment operator
+		        			{
+		        				assign.push_back({nx->first,nx->second});
+		        	//			cout << nx->first << "\t" << nx->second << endl;
+		        				nx++;
+		        				for(auto it3 = literals.begin(); it3!=literals.end();it3++)
+		        				{
+		        					if(nx->second == *it3) // check if the token next an assignment operator is a literal
+		        					{
+		        						check = true; 
+		        						assign.push_back({nx->first,nx->second});
+		        	//					cout << nx->first << "\t" << nx->second << endl;
+		        						break;
+									}
+								}
+								
+								if(check == true)
+								{
+									for(auto it4 = assign.begin(); it4!=assign.end();it4++)
+									{
+										cout<<it4->first << "\t" << it4->second << endl;
+									}
+									cout << endl;
+									auto ptr_type = assign.begin(); // point at the type which is at index 0
+									auto ptr_name = next(ptr_type,1); // point at the name which is at index 2
+									auto ptr_val = next(ptr_type,3); // point to the value which is at index 3
+									
+									cout << ptr_type->first << " " << ptr_name->first << " " << ptr_val->first << endl;
+									
+									
+								}
+							}
+							else continue;
+						}
+						else
+						{
+							continue;
+						}
+					}
+					else
+					{
+						continue;
+					}
+	
+				}
+			}
+			
+}
+
+void type_check(string _type, string _name, string _val)
+{
+	if (!(_type == "STR") && (_val == "string literal"));
+	{
+		cout << "type mismatch" << endl;
+	}
+	
+	
+}
+
+
+
