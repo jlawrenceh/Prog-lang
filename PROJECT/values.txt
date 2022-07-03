@@ -1,0 +1,3 @@
+INT a = 3 ~ 
+STR s = "hello world" ~ 
+DBL b = 1.5 ~ 
