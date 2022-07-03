@@ -12,6 +12,7 @@ using namespace std;
 
 array<string, 17> keyword = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "CONST", "main",
 				  			  "IN", "OUT", "return", "std", "iostream", "endl", "IF", "ELSE" };
+				  			  
 array<string, 19> op = { "+", "-", "*", "/",  "^",  "&&",  "||",  "=",  "==",  "&",  "|",  "%", "++",  "--", "+=", "-=", "/=", "*=", "%=" };
 array<string, 18> sym = { "(", "{", "[", ")", "}", "]", "<", ">", "()", ";", "<<", ">>", ",", "#", ",", "~", "#", "@" };
 
@@ -102,13 +103,35 @@ void view_lexical_errors(){
 void parser(string str){
 		string s="";
 		int len = str.length();
+		bool read_str_lit = false;
 		
 	for (int i = 0; i < len; i++)
 	{
-
-		if (str[i] != ' ')
-		s += str[i];
-
+		
+		if (read_str_lit == true)
+		{
+			s+= str[i];
+			if (str[i] == '\"')
+			{
+				read_str_lit = false;
+				lex.push_back(s);
+				cout << s <<" is a string literal";
+				s = "";
+			}
+			continue;
+		}	
+		
+		if (str[i] == '\"')
+		{
+			read_str_lit = true;
+			s+= str[i];
+			continue;
+		}
+		
+		
+	if (str[i] != ' ')
+	s += str[i];
+	
 	else {
 		if (isOperator(s))
 	{
