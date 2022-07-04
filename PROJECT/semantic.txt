@@ -1,9 +1,0 @@
-INT x = 5 ~ 
-INT ans ~ 
-ans = x / 0 ~ 
-STR str = 6 ~ 
-
-
-
-
-

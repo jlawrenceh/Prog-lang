@@ -1,4 +1,8 @@
-INT a = 3 ~ 
-STR 1s = "hello world" ~ 
-DBL b#$ = 1.5#$ ~ 
+int main ( ) { 
+
+IN3T a$%^ = 3.2 ~ 
+STR3 1b = "hello world" ~ 
+DBL c_sd = 1.5$ ~ 
+
+} 
 
