@@ -95,6 +95,7 @@ int main(){
         case 5:{ // semantic errors
             cout << "View Semantic errors"<<endl;
             assignment();
+            division();
             break;
         }
         case 6:{ // exit
