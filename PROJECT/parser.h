@@ -371,14 +371,28 @@ void assignment()
 }
 
 bool keyword_error(){
-					       	for(auto it = tokens.begin(); it!=tokens.end();it++){
+				for(auto it = tokens.begin(); it!=tokens.end();it++){
 				       		auto next_it = next(it, 1);
 				        	if(it->second == "identifier" && next_it ->second == "identifier"){
 								if(!isKeyword(it->first)){
 									lexical_errors.push_back(it->first);
-									return true;
+									//return true;
+								}
+								else
+								{
+									continue;
 								}
 								
+							}
+							else if(it->second == "terminator" && next_it ->second == "identifier"){
+									if(!isKeyword(it->second)){
+										lexical_errors.push_back(next_it ->first);
+									//	return true;
+								}
+								else
+								{
+									continue;
+								}
 							}
 						}	
 }
