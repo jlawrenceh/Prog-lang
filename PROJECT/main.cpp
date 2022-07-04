@@ -78,6 +78,7 @@ int main(){
             break;
         }
         case 3:{ // lexical errors
+        	keyword_error();
         	if(lexical_errors.empty()){
         		cout<<"\n";
 				cout<<"No Lexical Error(s) found...\n";
@@ -95,7 +96,6 @@ int main(){
         case 5:{ // semantic errors
             cout << "View Semantic errors"<<endl;
             assignment();
-            division();
             break;
         }
         case 6:{ // exit

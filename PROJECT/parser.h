@@ -232,6 +232,7 @@ vector<string> data_types = {"INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR"};
 
 vector<string> literals = {"string literal","integer","double"};
 vector<pair<string, string>> assign; // assignment syntax 
+bool check;
 /*
 struct{
 	int var;
@@ -281,7 +282,7 @@ bool isMatched(string _type, string _val)
 
 void assignment()
 {
-	bool check;
+	
         	for(auto it = tokens.begin(); it!=tokens.end();it++)
         	{
         		if(it->second == "keyword")
@@ -363,83 +364,24 @@ void assignment()
 					}
 	
 				}
-			}
-			assign.clear();
-			
-}
-
-void division()
-{
-	bool check;
-	vector<string>arithmetic = { "+", "-", "*", "/"};
-	vector<pair<string, string>> arith_syn; // arithmetic operation syntax
-	for(auto it = tokens.begin(); it!=tokens.end();it++)
-	{
-		if(it->second == "identifier") // check if the token is an identifier
-		{
-			auto nx = next(it,1);
-			if(nx->second == "operator") // check if the token next to data type is an operator
-			{
-				check = false;
-				for(auto it2 = arithmetic.begin(); it2!=arithmetic.end();it2++)
-        			{
-        				if(nx->first == *it2) // check if the keyword is an arithmetic operator
-        				{
-        					arith_syn.push_back({it->first,it->second});
-        					arith_syn.push_back({nx->first,nx->second});
-        		
-        					check = true; //  if the keyword is an arithmetic operator, check = true;
-        					break;
-						}
-					
-					}
 				
-				if(check == true)
-				{
-				
-					nx++;
-					if((nx->second == "integer") || (nx->second == "double"))// check if the token next an assignment operator is an integer or double
-					{
-						arith_syn.push_back({nx->first,nx->second}); 	
-					
-						cout << endl << endl;
+	
 						
-						for(auto it2 = arith_syn.begin(); it2!=arith_syn.end();it2++)
-						{
-							cout<< it2->first << "\t" << it2->second << endl; 
-						}
-						
-						auto ptr_val = prev(arith_syn.end(),1);
-						if(ptr_val-> first == "0")
-						{
-							cout << "cannot divide by zero" << endl;	
-						}
-						arith_syn.clear();
-						
-					}
-					else
-					{
-						cout << endl << "type mismatch" << endl;
-						continue;
-					}
-				}
-				else
-				{
-					arith_syn.clear();
-					continue;
-				}
-			}
-			else
-			{
-				arith_syn.clear();
-				continue;
-			}
-					
-			
-		}
 	}
 }
 
+bool keyword_error(){
+					       	for(auto it = tokens.begin(); it!=tokens.end();it++){
+				       		auto next_it = next(it, 1);
+				        	if(it->second == "identifier" && next_it ->second == "identifier"){
+								if(!isKeyword(it->first)){
+									lexical_errors.push_back(it->first);
+									return true;
+								}
+								
+							}
+						}	
+}
 
 
 
