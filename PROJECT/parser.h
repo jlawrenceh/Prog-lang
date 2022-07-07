@@ -289,6 +289,7 @@ void assignment()
         		{
         		//	cout << it->first << endl;
         			//auto nx =std :: next(it, 2);
+        			check = false;
         			
         			for(auto it2 = data_types.begin(); it2!=data_types.end();it2++)
         			{
@@ -299,6 +300,8 @@ void assignment()
         			//		cout << it->first << "\t" << it->second << endl;
         					break;
 						}
+						else
+						assign.clear();
 					}
 					
 					if (check == true)
@@ -328,7 +331,7 @@ void assignment()
 								
 								if(check == true)
 								{
-									
+									check = false;
 									cout << endl;
 									auto ptr_type = assign.begin(); // point at the type which is at index 0
 									auto ptr_name = next(ptr_type,1); // point at the name which is at index 1
@@ -339,8 +342,7 @@ void assignment()
 								
 									
 									if(!isMatched(ptr_type->first, ptr_val->second))
-									{
-										
+									{	
 										for(auto it4 = assign.begin(); it4!=assign.end();it4++)
 										{
 											cout<<it4->first << "\t" << it4->second << endl;
@@ -351,15 +353,21 @@ void assignment()
 									
 								}
 							}
-							else continue;
+							else 
+							{
+								assign.clear();
+								continue;
+							}
 						}
 						else
 						{
+							
 							continue;
 						}
 					}
 					else
 					{
+						
 						continue;
 					}
 	
@@ -419,11 +427,7 @@ void division()
 						arith_syn.clear();
 						
 					}
-					else
-					{
-						cout << endl << "type mismatch" << endl;
-						continue;
-					}
+					
 				}
 				else
 				{

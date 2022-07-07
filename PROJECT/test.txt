@@ -3,6 +3,9 @@ int main ( ) {
 INT x = 1 ~ 
 INT y = 2 ~ 
 INT sum = x + y ~ 
+CHAR a ~ 
+a = 10 ~ 
+x = a / 0 ~ 
 
 IF ( x > y ) { 
 OUT @ "x is greater than y" ~ 

@@ -90,12 +90,12 @@ int main(){
             division();
             break;
         }
+        
         case 6:{ // exit
             cout<<"Exit";
             break;
         }
-        
-        
+         
         default:{
         	cout <<"Invalid input \n";
 			break;
