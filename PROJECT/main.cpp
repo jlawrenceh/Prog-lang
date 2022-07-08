@@ -29,6 +29,7 @@ int main(){
 		 << "4: View Syntax errors\n"
 		 << "5: View Semantic errors\n" 
 		 << "6: Exit\n" 
+		 << "7: View Declared Variables\n"
 		 << "Please select an option: ";
     cin >> menu;
     
@@ -48,6 +49,7 @@ int main(){
 			cout<< filename <<" file successfully uploaded\n";
 			
 			parser(code + ' ');
+			declared_check(); //push all of the succesfully declared variable in a vector
 			} 
 			else {
 				cout << "Error file not found...\n";
@@ -59,7 +61,6 @@ int main(){
         
         case 2:{ // lexemes tokens
             cout << "View lexemes and tokens\n";
-        	
         	cout<<endl;
 			for (i = lex.begin(); i != lex.end(); ++i){
 				if(i == lex.end() - 1){
@@ -78,20 +79,19 @@ int main(){
             break;
         }
         case 3:{ // lexical errors
-        	
-        	if(lexical_errors.empty()){
+        	keyword_check();
+        	if(lexical_errors.size() == 0){
         		cout<<"\n";
 				cout<<"No Lexical Error(s) found...\n";
 		    } else {
 		    	cout<<"\n";
-		    	keyword_error();
 		    	cout << "Lexical Error(s)...\n";
             	view_lexical_errors();
 			}
             break;
         }
         case 4:{ // syntax errors
-            cout << "View Syntax errors";
+            cout << "View Syntax errors...\n";
             break;
         }
         case 5:{ // semantic errors
@@ -103,6 +103,11 @@ int main(){
             cout<<"Exit";
             break;
         }
+        
+        case 7: {
+        	view_declared_vars();
+			break;
+		}
         
         
         default:{

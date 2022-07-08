@@ -14,8 +14,8 @@
 using namespace std;
 
 
-array<string, 17> keyword = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "CONST", "main",
-				  			  "IN", "OUT", "return", "std", "iostream", "endl", "IF", "ELSE" };
+array<string, 19> keyword = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "CONST", "main",
+				  			  "IN", "OUT", "return", "std", "iostream", "endl", "IF", "ELSE", "int", "FLOOP" };
 				  			
 array<string, 19> op = { "+", "-", "*", "/",  "^",  "&&",  "||",  "=",  "==",  "&",  "|",  "%", "INC",  "DEC", "+=", "-=", "/=", "*=", "%=" };
 array<string, 17> sym = { "(", "{", "[", ")", "}", "]", "<", ">", "()", ";", "<<", ">>", ",", "#", ",", "#", "@" };
@@ -27,12 +27,15 @@ vector<pair<string,string>> tokens;
 vector<string> lex;
 vector<string> :: iterator i;
 vector<string> lexical_errors;
+vector<string> declared_vars;
 
 
+
+void keyword_error(); 
 
 bool isKeyword (string a){
 
-	for (int i = 0; i < 17; i++)
+	for (int i = 0; i < 19; i++)
 	{
 		if (keyword[i] == a)
 		{
@@ -72,14 +75,13 @@ bool isSymbol (string a){
 }
 
  // identifier error symbol(s) on the identifier
-bool islexicalerror(string a){
+bool is_lexicalerror(string a){
     if (a.find_first_not_of(legal_chars) != string::npos){
     	return true;
 	}
-	 else {
-		return false;
-	}
-} 
+
+	return false;
+}
 
 //identifer cannot start with number(s)
 bool invalid_identifier(string a){
@@ -105,6 +107,21 @@ void view_lexical_errors(){
 	for (i = lexical_errors.begin(); i != lexical_errors.end(); ++i){		
 		cout << *i <<"\n";
 	}
+}
+
+bool is_declared(string &a){ //to check if the identifer is declared
+	for(auto i = declared_vars.begin(); i != declared_vars.end(); ++i){		
+		if(a == *i){
+			return true;
+		}
+	}
+	return false;
+}
+
+void view_declared_vars(){
+	for (i = declared_vars.begin(); i != declared_vars.end(); ++i){		
+		cout << *i <<"\n";
+	}	
 }
 
 void parser(string str){
@@ -208,12 +225,14 @@ void parser(string str){
 
 	
 	else {
-		lex.push_back(s);
-		tokens.push_back({s,"identifier"});
-		if(islexicalerror(s)){
+		if(is_lexicalerror(s)){
 			lexical_errors.push_back(s);
 	//		cout << s << " is an lexical error\n"; //if identifier has symbol(s)
-		} 
+		}
+		else {
+			lex.push_back(s);
+			tokens.push_back({s,"identifier"});
+		}
 		s = "";
 			}
 
@@ -370,34 +389,53 @@ void assignment()
 	}
 }
 
-bool keyword_error(){
-				for(auto it = tokens.begin(); it!=tokens.end();it++){
-				       		auto next_it = next(it, 1);
-				        	if(it->second == "identifier" && next_it ->second == "identifier"){
-								if(!isKeyword(it->first)){
-									lexical_errors.push_back(it->first);
-									//return true;
-								}
-								else
-								{
-									continue;
-								}
-								
-							}
-							else if(it->second == "terminator" && next_it ->second == "identifier"){
-									if(!isKeyword(it->second)){
-										lexical_errors.push_back(next_it ->first);
-									//	return true;
-								}
-								else
-								{
-									continue;
-								}
-							}
-						}			
+bool invalid_datatype(string &a){
+		for(auto it2 = data_types.begin(); it2 != data_types.end(); it2++){
+			if(a == *it2){
+				return false;
+			}
+		}
+	
+	return true;
 }
 
+void keyword_check(){
+	for(auto it = tokens.begin(); it !=tokens.end(); it++){
+			auto next_it = next(it, 1);
+				if(it->second == "identifier" && next_it->second == "identifier"){
+					if(invalid_datatype(it->first)){
+						lexical_errors.push_back(it->first);
+					}		
+				}
+				else if(it->second == "terminator" && next_it->second == "identifier"){
+						if(is_declared(next_it->first)){
+							continue;
+						}
+						else {
+							lexical_errors.push_back(next_it->first);
+						}
+				}
+				else if(it->second == "keyword" && next_it->second == "identifier"){
+						if(invalid_datatype(it->first)){
+							lexical_errors.push_back(it->first);
+						}
+				}
+	}
 
+	//remove duplicates in the vector
+	sort( lexical_errors.begin(), lexical_errors.end() );
+	lexical_errors.erase( unique( lexical_errors.begin(), lexical_errors.end() ), lexical_errors.end() );
+}
+
+void declared_check(){ //all valid identifiers that is declared
+	for(auto it = tokens.begin(); it!=tokens.end();it++){
+		auto next_it = next(it, 1);
+		if(it->second == "keyword" && next_it->second == "identifier" && !invalid_datatype(it->first)){
+			declared_vars.push_back(next_it->first);
+		}
+	}
+	
+}
 
 
 
