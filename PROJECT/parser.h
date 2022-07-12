@@ -10,34 +10,87 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#include <regex>
 
 using namespace std;
 
 
-array<string, 19> keyword = { "INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR", "CONST", "main",
-				  			  "IN", "OUT", "return", "std", "iostream", "endl", "IF", "ELSE", "int", "FLOOP" };
-				  			
-array<string, 19> op = { "+", "-", "*", "/",  "^",  "&&",  "||",  "=",  "==",  "&",  "|",  "%", "INC",  "DEC", "+=", "-=", "/=", "*=", "%=" };
-array<string, 17> sym = { "(", "{", "[", ")", "}", "]", "<", ">", "()", ";", "<<", ">>", ",", "#", ",", "#", "@" };
+vector<string> data_types = {"INT", "CHAR", "BLN", "FLT", "DBL", "STR", "VOID"};							
+vector<string> arithmetic = {"+", "-", "*", "/", "%"};
+vector<string> assignment = {"=", "+=", "-=",  "*=",  "/=",  "%="};
+vector<string> relational = {"==", "!=", ">", "<", ">=", "<="};
+vector<string> logical = {"AND", "OR", "NOT",};
+vector<string> keywords = { "OUT", "IN", "IF-ELSE", "FLOOP", "DLOOP", "WLOOP", "IF", "ELSE"};
+vector<string> symbols =  { "(", "{", "[", ")", "}", "]", ",", "#", "@"};
+string terminator = "~";
 
 string legal_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_";
 string nums = "1234567890";
 
 vector<pair<string,string>> tokens;
-vector<string> lex;
+vector<string> lexemes;
 vector<string> :: iterator i;
 vector<string> lexical_errors;
 vector<string> declared_vars;
 
+bool is_DataType(string a);
+bool is_Arithmetic(string a);
+bool is_Assignment(string a);
+bool is_Relational(string a);
+bool is_Logical(string a);
+bool is_Keyword(string a);
+bool is_Symbol(string a);
+void parser(string str);
 
-
-void keyword_error(); 
-
-bool isKeyword (string a){
-
-	for (int i = 0; i < 19; i++)
+bool is_DataType(string a){
+	for(auto itr : data_types)
 	{
-		if (keyword[i] == a)
+		if(itr == a)
+			return true;
+	}
+	return false;
+}
+
+bool is_Arithmetic(string a){
+	for(auto itr : arithmetic)
+	{
+		if(itr == a)
+			return true;
+	}
+	return false;
+}
+
+bool is_Assignment(string a){
+	for(auto itr : assignment)
+	{
+		if(itr == a)
+			return true;
+	}
+	return false;
+}
+
+bool is_Relational(string a){
+	for(auto itr : relational)
+	{
+		if(itr == a)
+			return true;
+	}
+	return false;
+}
+
+bool is_Logical(string a){
+	for(auto itr : logical)
+	{
+		if(itr == a)
+			return true;
+	}
+	return false;
+}
+
+bool is_Keyword(string a){
+	for(auto itr : keywords)
+	{
+		if(itr == a)
 		{
 			return true;
 		}
@@ -46,42 +99,46 @@ bool isKeyword (string a){
 	return false;
 }
 
-bool isOperator (string a){
-	
-	for (int i = 0; i < 19; i++)
+bool is_Symbol(string a){
+		for(auto itr : symbols)
 	{
-		if (op[i] == a)
-		{
-			
+		if(itr == a)
 			return true;
-		}
 	}
-	
 	return false;
 }
 
-bool isSymbol (string a){
-	
-	for (int i = 0; i < 17; i++)
-	{
-		if (sym[i] == a)
-		{
-		
-			return true;
-		}
-	}
-	
-	return false;
+bool is_Number(string a){
+	string::const_iterator it = a.begin();
+    while (it != a.end() && isdigit(*it)) ++it;
+    return !a.empty() && it == a.end();
 }
 
  // identifier error symbol(s) on the identifier
-bool is_lexicalerror(string a){
+ /*
+bool isLexicalError(string a){
     if (a.find_first_not_of(legal_chars) != string::npos){
     	return true;
 	}
 
 	return false;
 }
+*/
+
+bool isLexicalError(string a){
+    regex pattern("[a-zA-Z_][0-9a-zA-Z_]{0,19}");
+    regex pattern2("[0-9]+[.]*[0-9]*"); //to check if the token is just a number
+    
+    bool match = regex_match(a, pattern);
+    bool match2 = regex_match(a, pattern2);
+    
+    if(match || match2){
+    	return false;
+	} 
+	
+	return true;
+}
+
 
 //identifer cannot start with number(s)
 bool invalid_identifier(string a){
@@ -95,12 +152,6 @@ bool invalid_identifier(string a){
 		{
 		 return false;
 		}    
-}
-
-bool is_number(string a){
-	string::const_iterator it = a.begin();
-    while (it != a.end() && isdigit(*it)) ++it;
-    return !a.empty() && it == a.end();
 }
 
 void view_lexical_errors(){
@@ -125,92 +176,133 @@ void view_declared_vars(){
 }
 
 void parser(string str){
-		string s="";
-		int len = str.length();
-		bool read_str_lit = false;
-		
+	string s = "";
+	int len = str.length();
+	bool read_str_lit = false;
+	bool read_char_lit = false;
+	
 	for (int i = 0; i < len; i++)
 	{
-		
-		if (read_str_lit == true)
+			// tells the parser that it is currently reading a type string.
+		if (read_str_lit == true) 
 		{
 			s+= str[i];
 			if (str[i] == '\"')
 			{
 				read_str_lit = false;
-				lex.push_back(s);
-				//cout << s <<" is a string literal";
+				lexemes.push_back(s);
 				tokens.push_back({s,"string literal"});
 				s = "";
 			}
 			continue;
-		}	
-		
-		if (str[i] == '\"')
+		}
+			// tells the parser that it will start reading a type string.
+		if (str[i] == '\"') 
 		{
 			read_str_lit = true;
 			s+= str[i];
 			continue;
+		} 
+		
+			// tells the parser that it is currently reading a type char
+		if (read_char_lit == true) 
+		{
+			s+= str[i];
+			if (str[i] == '\'')
+			{
+				read_char_lit = false;
+				lexemes.push_back(s);
+				tokens.push_back({s,"character"});
+				s = "";
+			}
+			continue;
+		}
+			// tells the parser that it will start reading a type char.
+		if (str[i] == '\'')
+		{
+			read_char_lit = true;
+			s+=str[i];
+			continue;
 		}
 		
 		
-	if (str[i] != ' ')
-	s += str[i];
-	
-	else if (s == "~")
-	{
-		lex.push_back(s);
-		tokens.push_back({s,"terminator"});
-		s = "";
-	}
-	else if (isOperator(s))
-	{
-		lex.push_back(s);
-	//	cout << s <<" is an operator\n";
-		tokens.push_back({s,"operator"});
-		s = "";
-	}
-
-	else if (isKeyword (s)) {
+		if(str[i] != ' ')
+			s += str[i];
+			
+		else if (s == "~")
+		{
+			lexemes.push_back(s);
+			tokens.push_back({s, "terminator"});
+			s = "";
+		}
 		
-		lex.push_back(s);
-		tokens.push_back({s,"keyword"});
-	//	cout << s <<" is a keyword\n";
-		s = "";
-	}
-	
-	else if (isSymbol(s))
-	{
-		lex.push_back(s);
-		tokens.push_back({s,"symbol"});
-	//	cout << s <<" is a symbol\n";
-		s = "";
-	}
-	
-	else if (s == "\n" || s == "" || s == "")
-	{
-	//	cout << "\n";
-		s = "";
-	}
-	
-	else if (isdigit (s[0])) 
-	{
-		int x = 0;
-		string s_copy = s;
-		s_copy.erase(remove(s_copy.begin(), s_copy.end(), '.'), s_copy.end()); // to remove '.' from floating point numbers temporarily
+		else if (is_DataType(s))
+		{
+			lexemes.push_back(s);
+			tokens.push_back({s, "data type"});
+			s = "";
+		}
 		
-			if (!isdigit (s[x++]))
-			{
-				continue;
-			}
-			else if(invalid_identifier(s) && !(is_number(s_copy))){ //if identifier has numbers at the start
+		else if (is_Arithmetic(s))
+		{
+			lexemes.push_back(s);
+			tokens.push_back({s, "arithmetic operator"});
+			s = "";
+		}
+		
+		else if (is_Assignment(s))
+		{
+			lexemes.push_back(s);
+			tokens.push_back({s, "assignment operator"});
+			s = "";
+		}
+		
+		else if (is_Relational(s))
+		{
+			lexemes.push_back(s);
+			tokens.push_back({s, "relational operator"});
+			s = "";
+		}
+		
+		else if (is_Logical(s))
+		{
+			lexemes.push_back(s);
+			tokens.push_back({s, "logical operator"});
+			s = "";
+		}
+		
+		else if (is_Keyword(s))
+		{
+			lexemes.push_back(s);
+			tokens.push_back({s, "keyword"});
+			s = "";
+		}
+		
+		else if (is_Symbol(s))
+		{
+			lexemes.push_back(s);
+			tokens.push_back({s, "symbol"});
+			s = "";
+		}
+		
+		else if (s == "\n" || s == "" || s == "")
+		{
+			s = "";
+		}
+		else if (isdigit(s[0]))
+		{
+			int x = 0;
+			string s_copy = s;
+			s_copy.erase(remove(s_copy.begin(), s_copy.end(), '.'), s_copy.end()); // to remove '.' from floating point numbers temporarily
+			
+		   if(isLexicalError(s)){ //if identifier has numbers at the start
 				lexical_errors.push_back(s);
 				s = "";
 			}
-
+			
 			else
 			{
-				lex.push_back(s);
+				lexemes.push_back(s);
 				if(s==s_copy)
 				{
 						tokens.push_back({s,"integer"});
@@ -221,33 +313,28 @@ void parser(string str){
 				}
 				s = "";
 			}
-	}
-
-	
-	else {
-		if(is_lexicalerror(s)){
-			lexical_errors.push_back(s);
-	//		cout << s << " is an lexical error\n"; //if identifier has symbol(s)
 		}
-		else {
-			lex.push_back(s);
-			tokens.push_back({s,"identifier"});
-		}
-		s = "";
+		
+		else
+		{
+			if(isLexicalError(s)){
+				lexical_errors.push_back(s);
 			}
-
-		}
+			lexemes.push_back(s);
+			tokens.push_back({s,"identifier"});
+			s = "";	
+		}	
 	}
+}
 	
 
 void parser_clear()
 {
 	tokens.clear();
-	lex.clear();
+	lexemes.clear();
 	lexical_errors.clear();
 }
 
-vector<string> data_types = {"INT", "CHAR", "BLN", "FLT", "DBL", "VOID", "STR"};
 
 vector<string> literals = {"string literal","integer","double"};
 vector<pair<string, string>> assign; // assignment syntax 
@@ -299,7 +386,7 @@ bool isMatched(string _type, string _val)
 	
 }
 
-void assignment()
+void is_Typemismatch()
 {
 	
         	for(auto it = tokens.begin(); it!=tokens.end();it++)
@@ -407,7 +494,7 @@ void keyword_check(){
 						lexical_errors.push_back(it->first);
 					}		
 				}
-				else if(it->second == "terminator" && next_it->second == "identifier"){
+				else if(it->second == "terminator" && next_it->second == "identifier"){ //hotfix sa floop
 						if(is_declared(next_it->first)){
 							continue;
 						}
@@ -415,7 +502,7 @@ void keyword_check(){
 							lexical_errors.push_back(next_it->first);
 						}
 				}
-				else if(it->second == "keyword" && next_it->second == "identifier"){
+				else if(it->second == "data type" && next_it->second == "identifier"){
 						if(invalid_datatype(it->first)){
 							lexical_errors.push_back(it->first);
 						}
@@ -430,12 +517,10 @@ void keyword_check(){
 void declared_check(){ //all valid identifiers that is declared
 	for(auto it = tokens.begin(); it!=tokens.end();it++){
 		auto next_it = next(it, 1);
-		if(it->second == "keyword" && next_it->second == "identifier" && !invalid_datatype(it->first)){
+		if(it->second == "data type" && next_it->second == "identifier" && !invalid_datatype(it->first) && !isLexicalError(next_it->first)){
 			declared_vars.push_back(next_it->first);
 		}
 	}
 	
 }
-
-
 
