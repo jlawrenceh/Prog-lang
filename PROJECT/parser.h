@@ -521,6 +521,54 @@ void declared_check(){ //all valid identifiers that is declared
 			declared_vars.push_back(next_it->first);
 		}
 	}
+}
+
+void division()
+{
+	bool check; 
+	int count = 1;
+	vector<pair<string, string>> arith_syn; //checks the arithmetic operation syntax
 	
+	for(auto it = tokens.begin(); it!=tokens.end();it++)
+	{
+		#define token second
+		#define lexeme first
+		
+		if(it->token == "identifier") 
+		{
+			auto nx = next(it,1);
+			if(nx->second == "arithmetic operator" )
+			{
+				arith_syn.push_back({it->lexeme,it->token});
+        		arith_syn.push_back({nx->lexeme,nx->token});
+        		nx++;
+        		
+        		if((nx->token == "integer") || (nx->token == "double"))
+        		{
+        			arith_syn.push_back({nx->lexeme,nx->token}); 
+        			
+        			cout << endl << endl;
+        			
+        			for(auto it2 = arith_syn.begin(); it2!=arith_syn.end();it2++)
+					{
+						cout<< it2->lexeme << "\t" << it2->token << endl; 
+					}	
+					
+					auto ptr_val = prev(arith_syn.end(),1);
+					if(ptr_val-> first == "0")
+					{
+						cout << "cannot divide by zero" << endl;
+					}
+					arith_syn.clear();					
+				}
+				else
+				{
+					arith_syn.clear();
+					continue;
+				}
+
+			}
+		}
+	}	
 }
 

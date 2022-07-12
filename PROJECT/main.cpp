@@ -85,6 +85,7 @@ int main(int argc, char** argv) {
 				cout << "__________________________________________________________" << endl << endl;
 				cout << "\t\t[5] View Semantic errors" << endl;
 				cout << "__________________________________________________________" << endl << endl;
+				division();
 				break;
 			}
 			case 6: {
