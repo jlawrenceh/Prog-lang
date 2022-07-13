@@ -16,7 +16,7 @@ using namespace std;
 
 
 vector<string> data_types = {"INT", "CHAR", "BLN", "FLT", "DBL", "STR", "VOID"};							
-vector<string> arithmetic = {"+", "-", "*", "/", "%"};
+vector<string> arithmetic = {"+", "-", "*", "/", "%", "INC", "DEC"};
 vector<string> assignment = {"=", "+=", "-=",  "*=",  "/=",  "%="};
 vector<string> relational = {"==", "!=", ">", "<", ">=", "<="};
 vector<string> logical = {"AND", "OR", "NOT",};
@@ -30,8 +30,10 @@ string nums = "1234567890";
 vector<pair<string,string>> tokens;
 vector<string> lexemes;
 vector<string> :: iterator i;
-vector<string> lexical_errors;
+vector<pair<int, string>> lexical_errors;
 vector<string> declared_vars;
+
+unsigned int line_no = 0;
 
 bool is_DataType(string a);
 bool is_Arithmetic(string a);
@@ -139,24 +141,13 @@ bool isLexicalError(string a){
 	return true;
 }
 
-
-//identifer cannot start with number(s)
-bool invalid_identifier(string a){
-	
-	if (!((a[0] >= 'a' && a[0] <= 'z') || 
-		  (a[0] >= 'A' && a[0] <= 'Z') || 
-		   a[0] == '_')){
-          	return true;		
-		} 
-		else 
-		{
-		 return false;
-		}    
-}
-
 void view_lexical_errors(){
-	for (i = lexical_errors.begin(); i != lexical_errors.end(); ++i){		
-		cout << *i <<"\n";
+	
+	sort(lexical_errors.begin(), lexical_errors.end());
+
+	
+	for (auto it : lexical_errors){		
+		cout<<"Error at line " << it.first << " " << "\"" << it.second << "\"\n";
 	}
 }
 
@@ -180,6 +171,8 @@ void parser(string str){
 	int len = str.length();
 	bool read_str_lit = false;
 	bool read_char_lit = false;
+	
+	line_no++;
 	
 	for (int i = 0; i < len; i++)
 	{
@@ -231,6 +224,7 @@ void parser(string str){
 			
 		else if (s == "~")
 		{
+			line_no++;
 			lexemes.push_back(s);
 			tokens.push_back({s, "terminator"});
 			s = "";
@@ -295,8 +289,8 @@ void parser(string str){
 			string s_copy = s;
 			s_copy.erase(remove(s_copy.begin(), s_copy.end(), '.'), s_copy.end()); // to remove '.' from floating point numbers temporarily
 			
-		   if(isLexicalError(s)){ //if identifier has numbers at the start
-				lexical_errors.push_back(s);
+		   if(isLexicalError(s)){ //if identifier has number(s) at the start
+				lexical_errors.push_back({line_no, s});
 				s = "";
 			}
 			
@@ -318,7 +312,7 @@ void parser(string str){
 		else
 		{
 			if(isLexicalError(s)){
-				lexical_errors.push_back(s);
+				lexical_errors.push_back({line_no, s});
 			}
 			lexemes.push_back(s);
 			tokens.push_back({s,"identifier"});
@@ -486,12 +480,24 @@ bool invalid_datatype(string &a){
 	return true;
 }
 
+
+bool duplicate_check(string &a) {
+	for(auto it : lexical_errors){
+		if(it.second == a){
+			return true;
+		}
+	}
+	return false;
+}
+
 void keyword_check(){
-	for(auto it = tokens.begin(); it !=tokens.end(); it++){
+	
+	for(auto it = tokens.begin(); it != tokens.end()-1; it++){
 			auto next_it = next(it, 1);
 				if(it->second == "identifier" && next_it->second == "identifier"){
-					if(invalid_datatype(it->first)){
-						lexical_errors.push_back(it->first);
+					if(invalid_datatype(it->first) && !duplicate_check(it->first)){
+						line_no_lexical++;
+						lexical_errors.push_back({line_no, it->first});
 					}		
 				}
 				else if(it->second == "terminator" && next_it->second == "identifier"){ //hotfix sa floop
@@ -499,19 +505,20 @@ void keyword_check(){
 							continue;
 						}
 						else {
-							lexical_errors.push_back(next_it->first);
+							line_no_lexical++;
+							lexical_errors.push_back({line_no, next_it->first});
 						}
 				}
 				else if(it->second == "data type" && next_it->second == "identifier"){
 						if(invalid_datatype(it->first)){
-							lexical_errors.push_back(it->first);
+							line_no_lexical++;
+							lexical_errors.push_back({line_no, it->first});
 						}
 				}
 	}
 
 	//remove duplicates in the vector
-	sort( lexical_errors.begin(), lexical_errors.end() );
-	lexical_errors.erase( unique( lexical_errors.begin(), lexical_errors.end() ), lexical_errors.end() );
+
 }
 
 void declared_check(){ //all valid identifiers that is declared

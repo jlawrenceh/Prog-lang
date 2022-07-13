@@ -42,10 +42,11 @@ int main(int argc, char** argv) {
 				if(!file.fail()){
 					while(getline(file,x)){
 						x+=" ";
+						parser(x);
 						code+=x;
 					}
 					cout << "[ NOTICE ] " << filename << " file successfully uploaded" << endl;
-					parser(code + ' ');
+					
 					declared_check(); //push all of the succesfully declared variable in a vector
 				}
 				else{
