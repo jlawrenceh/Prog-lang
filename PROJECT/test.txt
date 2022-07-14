@@ -1,7 +1,6 @@
-int main ( ) { 
 
-INT x = 1 ~ 
-INT y = 2 ~ 
+INT x$ = 1 ~ 
+INTt y = 2 ~ 
 INT sum = x + y ~ 
 
 IF ( x > y ) { 
@@ -15,5 +14,5 @@ FLOOP ( INT i = 0 ~ i < 5 ~ i INC ) {
 OUT @ i ~ 
 } 
 
-} 
+
 
